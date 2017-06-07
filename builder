@@ -15,8 +15,14 @@ main() {
 			--prefix="$prefix" \
 			--libdir="$prefix/lib" \
 			--libexecdir="$prefix/lib" \
-			--enable-multi-arch
-		make && make install
+			--with-headers="$prefix/include" \
+			--disable-multi-arch \
+			--disable-werror \
+			--host=armv7l-unknown-linux-gnueabihf \
+			--build=armv7l-unknown-linux-gnueabihf
+		install -dm755 "$prefix"/etc
+		touch "$prefix"/etc/ld.so.conf
+		make -j "$(getconf _NPROCESSORS_ONLN)" && make install
 		tar --hard-dereference -zcf "/glibc-bin-$version.tar.gz" "$prefix"
 	} >&2
 
