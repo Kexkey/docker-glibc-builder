@@ -3,7 +3,7 @@ general:
     - "artifacts"
 machine:
   environment:
-    GLIBC_VERSION: 2.24
+    GLIBC_VERSION: 2.27
   pre:
     - sudo mv /usr/local/go /usr/local/go-1.6.2
     - wget -q -O /tmp/go1.7.3.tgz https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz
@@ -20,10 +20,10 @@ test:
   pre:
     - mkdir -p artifacts
   override:
-    - "docker run --rm -e STDOUT=1 sgerrand/glibc-builder $GLIBC_VERSION /usr/glibc-compat > artifacts/glibc-bin-$GLIBC_VERSION-$(uname -m).tar.gz"
+    - "docker run --rm -e STDOUT=1 sgerrand/glibc-builder $GLIBC_VERSION /usr/glibc-compat > artifacts/glibc-bin-$GLIBC_VERSION-0-$(uname -m).tar.gz"
 deployment:
   release:
-    tag: /[0-9]+(\.[0-9]+){1,2}(\-r\d+)?$/
+    tag: /[0-9]+(\.[0-9]+){1,2}(\-\d+)?$/
     owner: sgerrand
     commands:
       - ghr -u sgerrand $CIRCLE_TAG artifacts/
@@ -32,4 +32,3 @@ deployment:
     owner: sgerrand
     commands:
       - ghr -u sgerrand --prerelease --delete unreleased artifacts
-      - ghr -u sgerrand --prerelease unreleased artifacts
